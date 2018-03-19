@@ -20,7 +20,9 @@ with open("rockyou.txt",'r') as f:
         for j in hashlib.algorithms_guaranteed:
             m = hashlib.new("%s" % j)
             m.update(i)
-            cur.execute("INSERT INTO %s(plain, hash) VALUES (%s,%s)" % (j,i,m.hexdigest()))
+            cmd = "INSERT INTO %s(plain, hash) VALUES ('%s','%s');" % (j,i[:-1],m.hexdigest())
+            #print cmd
+            cur.execute(cmd)
             conn.commit()
 
 cur.close()
