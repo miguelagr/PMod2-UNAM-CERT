@@ -8,3 +8,5 @@ apt-get install python-pip -y
 pip install psycopg2
 
 echo "psql -f script.sql" | su postgres
+
+export PATH=$PATH:/home/final
