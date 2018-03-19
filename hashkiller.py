@@ -1,3 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#UNAM-CERT
+
 import hashlib
 import time
 import psycopg2
