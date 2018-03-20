@@ -1,3 +1,5 @@
 #!/bin/bash
 
-python hashkiller.py
+echo $@
+
+python hashkiller.py $@
