@@ -26,6 +26,59 @@ def addOptions():
 	parser.add_option('-k', '--hashcat', dest='hashcat', default=None, help='Usar modo "hashcat" para romper contraseñas')
 	parser.add_option('-e', '--shadow', dest='shadow', default=None, help='Usar un archivo con el formato /etc/shadow')
 	parser.add_option('-v', '--verbose', dest='verbose', default=None, help='Imprime la información detallada de la ejecucuión del programa')
-	parser.add_option('-h', '--help', dest='help', default=None, help='Muestra información sobre las banderas')
 	opts,args = parser.parse_args()
 	return opts
+
+
+##############################################################
+# Método para leer configuraciones desde un archivo de texto #
+# y pasarlas a un diccionario                                #
+# Recibe:                                                    #
+# Un archivo de texto                                        #
+#############################################################
+def lee_configuracion(archivo):
+	res = {}
+    with open(archivo,'r') as configuraciones:
+		for linea in configuraciones.readlines():
+			linea = linea.split('=')
+			opcion = linea[0]
+			valor = linea[1]
+			res[opcion] = valor
+	return res			
+
+############################################################################################
+#                                                                                          #
+#Función para almacenar las opciones que nos pasen por línea de comandos en un diccionario #
+#																						   #
+############################################################################################			
+def obten_valores(opts):
+    valores = {} 
+    valores['hash'] = opts.valores
+    valores['hashes'] = opts.hash
+    valores['algoritmo'] = opts.hashes
+    valores['puerto'] = opts.puerto
+    valores['diccionario'] = opts.diccionario
+    valores['salt'] = opts.salt
+    valores['formato'] = opts.formato
+    valores['output'] = opts.output
+    valores['threads'] = opts.threads
+    valores['config'] = opts.config
+    valores['identif'] = opts.identif
+    valores['genera'] = opts.genera
+    valores['hashkiller'] = opts.hashkiller
+    valores['verboso'] = opst.verboso
+    valores['hashcat'] = opts.hashcat
+    valores['shadow'] = opts.shadow 
+return valores
+
+#####################################################################################################
+#																									#
+#Función para cambiar el diccionario original en caso de recibir un archivo de configuración        #
+#																									#
+#####################################################################################################
+
+def cambia_parametros(original, modificado):
+	for key in modificado.keys():
+		original[key] = modificado[key]
+	return original
+
