@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #UNAM-CERT
+import re
 import sys
 import optparse
 
@@ -29,13 +30,12 @@ def addOptions():
 	opts,args = parser.parse_args()
 	return opts
 
-
 ##############################################################
 # Método para leer configuraciones desde un archivo de texto #
 # y pasarlas a un diccionario                                #
 # Recibe:                                                    #
 # Un archivo de texto                                        #
-#############################################################
+##############################################################
 def lee_configuracion(archivo):
 	res = {}
     with open(archivo,'r') as configuraciones:
@@ -82,3 +82,37 @@ def cambia_parametros(original, modificado):
 		original[key] = modificado[key]
 	return original
 
+
+#####################################################################################################
+#                                                                                                   #
+#Función que va a revisar que las opciones se pasaron corréctamente                                 #                                  
+#                                                                                                   #
+#####################################################################################################
+
+def revisa_opciones(opts):
+	if opts['hashcat'] is not None and opts['hashkiller'] is not None: #Evita que se pasen al mismo tiempo el modo hashcat y el modo hashkiller
+		error('¡¡No puedes usar al mismo tiempo las opciones hashcat y hashkiller!!')
+	
+	if opts['shadow'] is not None and opts['algoritmo'] is not None: #Evita que al usar un archivo con formato /etc/shadow se pasen las opciones: salt, algoritmo y genera (base de datos)
+		error('¡¡No puedes usar al mismo tiempo las opciones shadow y algoritmo!!')
+	elif opts['shadow'] is not None and opts['salt'] is not None:
+		error('¡¡No puedes usar al mismo tiempo las opcines shadow y salt!!')
+	elif opts['shadow'] is not None and opts['genera'] is not None:
+		error('¡¡No puedes usar al mismo tiempo las opciones shadow y genera!!')
+
+	if opts['salt'] in not None and opts['formato' is None]: #Evita que se pase la salt sin formato
+		error('Debes especificar el formato de la salt')
+
+
+####################################################################################################
+#																								   #
+#										Función main                                               #
+#																								   #
+####################################################################################################
+
+if __name__ == '__main__':
+	try:
+
+	except Exception as e:
+        error('Ocurrió un error')
+		error(e, True)
