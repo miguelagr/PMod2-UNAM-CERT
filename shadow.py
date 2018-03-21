@@ -4,18 +4,28 @@
 
 import hashlib
 import time
+import crypt
 
-print time.clock()
 
-
-with open("/etc/shadow",'r') as f:
-    l = f.readline()
-    while l:
-        s = l.split(':')
-        print s[1].split('$')[1:]
+def obtener_salt():
+    salts = []
+    with open("/etc/shadow",'r') as f:
         l = f.readline()
+        while l:
+            s = l.split(':')
+            if len(s[1].split('$')[1:]) > 0:
+                salts.append(('$%s$%s$' % tuple((s[1].split('$')[1:])[:-1]) , s[1] ))
+            l = f.readline()
+    return salts
 
-print time.clock()
+def obtener_pass(arch):
+    with open(arch) as f:
+        l = f.readline()
+        while l:
+            for i in obtener_salt():
+                c = crypt.crypt(l[:-1],i[0])
+                if i[1] == c:
+                    print l     
+            l = f.readline()
 
-st = raw_input("hola: ")
-print st
+obtener_pass("rockyou.txt")
