@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 #UNAM-CERT
 
-import hashlib,binascii
+import hashlib
+import binascii
+import sys
 from Crypto.Hash import MD4
 		
 #############################################################################################################################
@@ -22,13 +24,14 @@ def generaHashes(archivo):
 			linea = linea.rstrip('\r') #Quitamos retorno de carro 
 			#A partir de aquí empezamos a calcular los hashes
 			md4 = MD4.new()
+			md4.update(linea)
 			md5 = hashlib.md5()
 			sha1 = hashlib.sha1()
 			sha224 = hashlib.sha224()
 			sha256 = hashlib.sha256()
 			sha384 = hashlib.sha384()
 			sha512 = hashlib.sha512()
-			ntlm = hashlib.new('md4', linea.encode('utf-16le')).digest()
+			ntlm = hashlib.new('md4', linea.encode('utf-16le', 'ignore')).digest()
 			md4.update(linea)
 			md5.update(linea)
 			sha1.update(linea)
@@ -75,4 +78,4 @@ def buscaContrasena(diccionario,hash):
 				if value == hash:
 					print "La contraseña es: " + key
 
-buscaContrasena((generaHashes("contrasenas.txt")), '62be6ae3fc86769be7e7c8a01ff46cf5') 
+buscaContrasena((generaHashes("rockyou.txt")), sys.argv[1])

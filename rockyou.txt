@@ -3899,7 +3899,7 @@ luciana
 liezel
 kambal
 hearty
-contraseña
+contrasena
 cinthya
 changeme
 zamora
@@ -8609,7 +8609,7 @@ pinina
 pharmacy
 papusa
 mysecret
-muñeca
+muneca
 mommyof2
 mollymoo
 medical
