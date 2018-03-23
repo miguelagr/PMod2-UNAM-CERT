@@ -30,26 +30,25 @@ def genera_bd(fname,tabla,algo):
 	with open(fname,'r') as f:
             i = f.readline()
 	    while i:
-                    p = i
-                    if 'ntlm' in algo:
-                        algo = filter(lambda x: x in hashlib.algorithms_available,algo)
-                        ntlm = hashlib.new('md4', i.encode('utf-16le', 'ignore')).digest()
-                        hntlm = binascii.hexlify(ntlm)
-                    else:
-                        ntlm = None
-                        hntlm = None
-	       	    m = [hashlib.new("%s" % j) for j in algo]
-                    for mi in m:
-                        mi.update(p)
-
-                    mhh = [i.hexdigest() for i in m]
-                    if ntlm:
-                        mhh.append(hntlm)
-                        algo.append('ntlm')
-                    mh = tuple(mhh)
-                    cmd = "INSERT INTO %s(plain, %s) VALUES ('%s', %s);" % (tabla, ('"%s",' * len(algo) % tuple(algo))[:-1], p, ("'%s'," * len(mh) % tuple(mh))[:-1])
-                    cur.execute(cmd)
-                    i = f.readline()
+                p = i[:-1]
+                if 'ntlm' in algo:
+                    algo = filter(lambda x: x in hashlib.algorithms_available,algo)
+                    ntlm = hashlib.new('md4', i.encode('utf-16le', 'ignore')).digest()
+                    hntlm = binascii.hexlify(ntlm)
+                else:
+                    ntlm = None
+                    hntlm = None
+	       	m = [hashlib.new("%s" % j) for j in algo]
+                for mi in m:
+                    mi.update(p)
+                mhh = [i.hexdigest() for i in m]
+                if ntlm:
+                    mhh.append(hntlm)
+                    algo.append('ntlm')
+                mh = tuple(mhh)
+                cmd = "INSERT INTO %s(plain, %s) VALUES ('%s', %s);" % (tabla, ('"%s",' * len(algo) % tuple(algo))[:-1], p, ("'%s'," * len(mh) % tuple(mh))[:-1])
+                cur.execute(cmd)
+                i = f.readline()
 	conn.commit()
 	cur.close()
 	conn.close()
@@ -117,13 +116,13 @@ def identifica(hashh):
 #print genera_bd("rockyou.txt",sys.argv[1],sys.argv[2:])
 
 digest = 'd577273ff885c3f84dadb8578bb41399'
-for i in busca_hash(sys.argv[1],digest,identifica(digest)):
-    print i
+print busca_hash(sys.argv[1],sys.argv[2],identifica(sys.argv[2]))
+#    print i
 
 
 #print busca_hash("rockyou",sys.argv[1],identifica(sys.argv[1]))
 digest = '2672275fe0c456fb671e4f417fb2f9892c7573ba'
-for i in busca_hash("rockyou",digest,identifica(digest)):
-    print i
+#for i in busca_hash("rockyou",digest,identifica(digest)):
+#    print i
 
 

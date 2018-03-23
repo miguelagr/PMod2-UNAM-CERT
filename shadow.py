@@ -43,7 +43,7 @@ def obtener_pass(arch,sh):
             for i in sh:
                 c = crypt.crypt(l[:-1],i[0])
                 if i[1] == c:
-                    t.append((l,i[1]))     
+                    t.append((l,i[1]))
             l = f.readline()
         return t
 
