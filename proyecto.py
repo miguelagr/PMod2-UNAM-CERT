@@ -161,7 +161,7 @@ def salt(archivo,salt,argumento):
 ####################################################################################################
 
 if __name__ == '__main__':
-	try:
+#	try:
 		opts = addOptions()
 		valores = obten_valores(opts)
 		if valores['config'] is not None: #Sí encuentra un archivo de configuración cambia los valores por los especificados en el archivo
@@ -180,35 +180,35 @@ if __name__ == '__main__':
 					nuevo = salt(configuraciones['diccionario'],configuraciones['salt'],configuraciones['formato'])
 					hashcat(configuraciones['threads'], nuevo, configuraciones['hash'])
 				else:
-					hashcat(configuraciones['threads'], configuraciones['diccionario'], configuraciones['hash'])
+					hashcat(int(configuraciones['threads']), configuraciones['diccionario'], configuraciones['hash'])
 
 		elif configuraciones['identif'] is not None: #Caso para la bandera que identifica el hash
 			identificador = identificador()
 			identificador.identifica(configuraciones['identif'])
 
 		elif configuraciones['genera'] is not None: #Caso para la generación de la base de datos
-			algoritmos = configuraciones['algoritmo']
-			for keys in algoritmos[key]:
-				cadena += algoritmos[key] + " "
-			generador = hashkiller()
-			generador.genera_bd(configuraciones['diccionario'],configuraciones['genera'],cadena)
+#			algoritmos = configuraciones['algoritmo']
+#			for keys in algoritmos[key]:
+#				cadena += algoritmos[key] + " "
+#			generador = hashkiller()
+			genera_bd(configuraciones['diccionario'],configuraciones['genera'],[str(configuraciones['algoritmo'])])
 
 		elif configuraciones['hashkiller'] is not None: #Caso para el modo hashkiller
 			if configuraciones['hash'] is not None and configuraciones['hashes'] is not None:
 				error("¡¡Ingresa un hash o un archivo con hashes, pero no ambos!!")
 			elif configuraciones['hash'] is not None:
-				for keys in algoritmos[key]:
-					cadena += algoritmos[key] + " "
-				busca_hash(configuraciones['hashkiller'], configuraciones['hash'],cadena)
+#				for keys in algoritmos[key]:
+#					cadena += algoritmos[key] + " "
+				busca_hash(configuraciones['hashkiller'], configuraciones['hash'],[str(configuraciones['algoritmo'])])
 			elif configuraciones['hashes'] is not None:
-				for keys in algoritmos[key]:
-					cadena += algoritmos[key] + " "
+#				for keys in algoritmos[key]:
+#					cadena += algoritmos[key] + " "
 				archivo = open(configuraciones[hashes],'r')
 				linea = archivo.readline()
 				while linea:
-					busca_hash(configuraciones['hashes'], linea, cadena)
+					busca_hash(configuraciones['hashes'], linea, [str(configuraciones['algoritmo'])])
 
 		elif configuraciones['shadow'] is not None: #Caso para el uso de archivo con formato shadow
 			obtener_pass(configuraciones['diccionario'], obtener_salt(configuraciones['shadow']))
-	except Exception as e:
-            print 'Ocurrió un error'
+#	except Exception as e:
+#            print 'Ocurrió un error'
