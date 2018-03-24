@@ -4,6 +4,9 @@
 import re
 import sys
 import optparse
+from hashcat import buscaContrasena, generaHashes
+from identificador import identifica
+
 
 def printError(msg, exit = False):
         sys.stderr.write('Error:\t%s\n' % msg)
@@ -28,6 +31,7 @@ def addOptions():
 	parser.add_option('-e', '--shadow', dest='shadow', default=None, help='Usar un archivo con el formato /etc/shadow')
 	parser.add_option('-v', '--verbose', dest='verbose', default=False, action='store_true', help='Imprime la información detallada de la ejecucuión del programa')
 	opts,args = parser.parse_args()
+	return opts
 
 ##############################################################
 # Método para leer configuraciones desde un archivo de texto #
@@ -57,7 +61,6 @@ def obten_valores(opts):
     valores['hash'] = opts.valores
     valores['hashes'] = opts.hash
     valores['algoritmo'] = opts.hashes
-    valores['puerto'] = opts.puerto
     valores['diccionario'] = opts.diccionario
     valores['salt'] = opts.salt
     valores['formato'] = opts.formato
@@ -122,13 +125,22 @@ def obten_bool(parametro):
 
 if __name__ == '__main__':
 	try:
+		opts = addOptions()
 		if obten_valores(opts)['config'] is not None:
 			configuraciones = cambia_parametros(obten_valores(opts),lee_configuracion(obten_valores(opts)['config']))
 		else: 
 			configuraciones = obten_valores(opts)
 
 		revisa_opciones(configuraciones)
-		
+
+		if configuraciones['hashcat'] :
+			hashcat = hashcat()
+			contrasenas = hashcat.generaHashes(configuraciones['diccionario'])
+			hashcat.buscaContrasena(contrasenas)
+
+		elif configuraciones['identif'] is not None:
+			identificador = identificador()
+			identificador.identifica(configuraciones['configuraciones'])
 
 	except Exception as e:
         error('Ocurrió un error')
