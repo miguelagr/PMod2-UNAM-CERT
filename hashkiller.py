@@ -20,7 +20,9 @@ def genera_bd(fname,tabla,algo):
     disponibles = list(hashlib.algorithms_available)
     disponibles.append('ntlm')
     algo = filter(lambda x: x in disponibles ,algo)
-    conn = psycopg2.connect("dbname=rainbown user=hash password=hola123.,")
+    if len(algo) < 1:
+        sys.exit("Introducir un hash valido")
+    conn = psycopg2.connect("dbname=root user=root password=hola123.,")
     cur = conn.cursor()
     cmd = "select (LOWER(tablename)) from pg_tables where schemaname like 'public' and tablename like LOWER('%s')" % (tabla)
     cur.execute(cmd)
@@ -65,7 +67,7 @@ def busca_hash(tabla,digest,algo):
     """
     plain = []
     disponibles = []
-    conn = psycopg2.connect("dbname=rainbown user=hash password=hola123.,")
+    conn = psycopg2.connect("dbname=root user=root password=hola123.,")
     cur = conn.cursor()
     cmd = "select (column_name) from information_schema.columns where LOWER(table_name) like LOWER('%s')" % (tabla)
 
@@ -113,9 +115,9 @@ def identifica(hashh):
         sys.exit("hash invalido")
 
 #print genera_bd("rockyou.txt","algos")
-#print genera_bd("rockyou.txt",sys.argv[1],sys.argv[2:])
+print genera_bd("rockyou.txt",sys.argv[1],[sys.argv[3]])
 
-digest = 'd577273ff885c3f84dadb8578bb41399'
+#digest = 'd577273ff885c3f84dadb8578bb41399'
 print busca_hash(sys.argv[1],sys.argv[2],identifica(sys.argv[2]))
 #    print i
 
