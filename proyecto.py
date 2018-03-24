@@ -199,14 +199,14 @@ if __name__ == '__main__':
 			elif configuraciones['hash'] is not None:
 #				for keys in algoritmos[key]:
 #					cadena += algoritmos[key] + " "
-				busca_hash(configuraciones['hashkiller'], configuraciones['hash'],[str(configuraciones['algoritmo'])])
+				print busca_hash(configuraciones['hashkiller'], configuraciones['hash'],[str(configuraciones['algoritmo'])])
 			elif configuraciones['hashes'] is not None:
 #				for keys in algoritmos[key]:
 #					cadena += algoritmos[key] + " "
 				archivo = open(configuraciones[hashes],'r')
 				linea = archivo.readline()
 				while linea:
-					busca_hash(configuraciones['hashes'], linea, [str(configuraciones['algoritmo'])])
+					print busca_hash(configuraciones['hashes'], linea, [str(configuraciones['algoritmo'])])
 
 		elif configuraciones['shadow'] is not None: #Caso para el uso de archivo con formato shadow
 			obtener_pass(configuraciones['diccionario'], obtener_salt(configuraciones['shadow']))
