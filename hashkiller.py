@@ -20,7 +20,7 @@ def genera_bd(fname,tabla,algo):
     disponibles = list(hashlib.algorithms_available)
     disponibles.append('ntlm')
     algo = filter(lambda x: x in disponibles ,algo)
-    conn = psycopg2.connect("dbname=root user=root password=hola123.,")
+    conn = psycopg2.connect("dbname=rainbown user=hash password=hola123.,")
     cur = conn.cursor()
     cmd = "select (LOWER(tablename)) from pg_tables where schemaname like 'public' and tablename like LOWER('%s')" % (tabla)
     cur.execute(cmd)
@@ -65,7 +65,7 @@ def busca_hash(tabla,digest,algo):
     """
     plain = []
     disponibles = []
-    conn = psycopg2.connect("dbname=root user=root password=hola123.,")
+    conn = psycopg2.connect("dbname=rainbown user=hash password=hola123.,")
     cur = conn.cursor()
     cmd = "select (column_name) from information_schema.columns where LOWER(table_name) like LOWER('%s')" % (tabla)
 
