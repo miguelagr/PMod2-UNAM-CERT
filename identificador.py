@@ -24,5 +24,5 @@ def identifica(hashh):
 	else:
 		print "No se pudo identificar el hash"
 
-identifica(sys.argv[1])
+#identifica(sys.argv[1])
 

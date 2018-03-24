@@ -41,12 +41,12 @@ def addOptions():
 ##############################################################
 def lee_configuracion(archivo):
 	res = {}
-    with open(archivo,'r') as configuraciones:
+	with open(archivo,'r') as configuraciones:
 		for linea in configuraciones.readlines():
 			linea = linea.split('=')
 			opcion = linea[0]
 			valor = linea[1]
-			if linea[0] == 'verbose' || linea[0] == 'hashcat':
+			if linea[0] == 'verbose' or linea[0] == 'hashcat':
 				obten_bool[linea[1]]
 			res[opcion] = valor
 	return res			
@@ -73,7 +73,7 @@ def obten_valores(opts):
     valores['verboso'] = opts.verboso
     valores['hashcat'] = opts.hashcat
     valores['shadow'] = opts.shadow 
-return valores
+    return valores
 
 #####################################################################################################
 #																									#
@@ -104,7 +104,7 @@ def revisa_opciones(opts):
 	elif opts['shadow'] is not None and opts['genera'] is not None:
 		error('¡¡No puedes usar al mismo tiempo las opciones shadow y genera!!')
 
-	if opts['salt'] in not None and opts['formato' is None]: #Evita que se pase la salt sin formato
+	if opts['salt'] is not None and opts['formato' is None]: #Evita que se pase la salt sin formato
 		error('Debes especificar el formato de la salt')
 
 #######################################################################################################
@@ -143,5 +143,6 @@ if __name__ == '__main__':
 			identificador.identifica(configuraciones['configuraciones'])
 
 	except Exception as e:
-        error('Ocurrió un error')
-		error(e, True)
+		print 'Ocurrió un error'
+        #error('Ocurrió un error')
+		#error(e, True)

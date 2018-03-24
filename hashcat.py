@@ -14,12 +14,12 @@ from Crypto.Hash import MD4
 # en el cuál la contraseña a analizar es la llave y el valor es un arreglo con los diferentes hashes para dicha contraseña  #
 #                                                                                                                           #
 #############################################################################################################################
-def generaHashes(archivo, numero_hilos):
+def generaHashes(archivo):
 	hashes = {}
 	try:
 		contrasenas = open(archivo,"r") 
 		linea = contrasenas.readline()
-			for linea in contrasenas:
+		for linea in contrasenas:
 			linea = linea.rstrip('\n') #Quitamos saltos de línea
 			linea = linea.rstrip('\t') #Quitamos tabuladores 
 			linea = linea.rstrip('\r') #Quitamos retorno de carro 				#A partir de aquí empezamos a calcular los hashes
@@ -65,10 +65,10 @@ def generaHashes(archivo, numero_hilos):
 		print "Ocurrió un error al tratar de abrir el archivo"
 
 
-for numero_hilos in range(3):
-		hilo = threading.Thread(terget=generaHashes, args=numero_hilos)
+#for numero_hilos in range(3):
+#		hilo = threading.Thread(target=generaHashes, args=numero_hilos)
 
-		hilo.start()
+#		hilo.start()
     	
 ########################################################################################################################
 #																													   #
@@ -84,4 +84,4 @@ def buscaContrasena(diccionario,hash):
 				if value == hash:
 					print "La contraseña es: " + key
 
-buscaContrasena((generaHashes("rockyou.txt")), sys.argv[1])
+#buscaContrasena((generaHashes("rockyou.txt")), sys.argv[1])
