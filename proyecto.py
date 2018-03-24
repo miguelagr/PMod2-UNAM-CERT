@@ -183,8 +183,7 @@ if __name__ == '__main__':
 					hashcat(int(configuraciones['threads']), configuraciones['diccionario'], configuraciones['hash'])
 
 		elif configuraciones['identif'] is not None: #Caso para la bandera que identifica el hash
-			identificador = identificador()
-			identificador.identifica(configuraciones['identif'])
+			identifica(configuraciones['identif'])
 
 		elif configuraciones['genera'] is not None: #Caso para la generación de la base de datos
 #			algoritmos = configuraciones['algoritmo']
@@ -209,6 +208,6 @@ if __name__ == '__main__':
 					print busca_hash(configuraciones['hashes'], linea, [str(configuraciones['algoritmo'])])
 
 		elif configuraciones['shadow'] is not None: #Caso para el uso de archivo con formato shadow
-			obtener_pass(configuraciones['diccionario'], obtener_salt(configuraciones['shadow']))
+			print obtener_pass(configuraciones['diccionario'], obtener_salt(configuraciones['shadow']))
 #	except Exception as e:
 #            print 'Ocurrió un error'

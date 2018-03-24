@@ -115,7 +115,7 @@ def identifica(hashh):
         sys.exit("hash invalido")
 
 #print genera_bd("rockyou.txt","algos")
-#print genera_bd("rockyou.txt",sys.argv[1],[sys.argv[3]])
+#print genera_bd(sys.argv[1],sys.argv[2],sys.argv[3:])
 
 #digest = 'd577273ff885c3f84dadb8578bb41399'
 #<<<<<<< HEAD
