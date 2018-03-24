@@ -24,11 +24,10 @@ def addOptions():
 	parser.add_option('-i', '--identif', dest='identif', default=None, help='Identifica el tipo de hash introducido')
 	parser.add_option('-g', '--genera', dest='genera', default=None, help='Genera una base de datos con los hashes de un diccionario de contraseñas')
 	parser.add_option('-b', '--hashkiller', dest='hashkiller', default=None, help='Usar modo "hash killer" para romper contraseñas')
-	parser.add_option('-k', '--hashcat', dest='hashcat', default=None, help='Usar modo "hashcat" para romper contraseñas')
+	parser.add_option('-k', '--hashcat', dest='hashcat', default=False,action='store_true',help='Usar modo "hashcat" para romper contraseñas')
 	parser.add_option('-e', '--shadow', dest='shadow', default=None, help='Usar un archivo con el formato /etc/shadow')
-	parser.add_option('-v', '--verbose', dest='verbose', default=None, help='Imprime la información detallada de la ejecucuión del programa')
+	parser.add_option('-v', '--verbose', dest='verbose', default=False, action='store_true', help='Imprime la información detallada de la ejecucuión del programa')
 	opts,args = parser.parse_args()
-	return opts
 
 ##############################################################
 # Método para leer configuraciones desde un archivo de texto #
@@ -43,6 +42,8 @@ def lee_configuracion(archivo):
 			linea = linea.split('=')
 			opcion = linea[0]
 			valor = linea[1]
+			if linea[0] == 'verbose' || linea[0] == 'hashcat':
+				obten_bool[linea[1]]
 			res[opcion] = valor
 	return res			
 
@@ -66,7 +67,7 @@ def obten_valores(opts):
     valores['identif'] = opts.identif
     valores['genera'] = opts.genera
     valores['hashkiller'] = opts.hashkiller
-    valores['verboso'] = opst.verboso
+    valores['verboso'] = opts.verboso
     valores['hashcat'] = opts.hashcat
     valores['shadow'] = opts.shadow 
 return valores
@@ -90,7 +91,7 @@ def cambia_parametros(original, modificado):
 #####################################################################################################
 
 def revisa_opciones(opts):
-	if opts['hashcat'] is not None and opts['hashkiller'] is not None: #Evita que se pasen al mismo tiempo el modo hashcat y el modo hashkiller
+	if opts['hashcat'] is not False and opts['hashkiller'] is not None: #Evita que se pasen al mismo tiempo el modo hashcat y el modo hashkiller
 		error('¡¡No puedes usar al mismo tiempo las opciones hashcat y hashkiller!!')
 	
 	if opts['shadow'] is not None and opts['algoritmo'] is not None: #Evita que al usar un archivo con formato /etc/shadow se pasen las opciones: salt, algoritmo y genera (base de datos)
@@ -103,6 +104,15 @@ def revisa_opciones(opts):
 	if opts['salt'] in not None and opts['formato' is None]: #Evita que se pase la salt sin formato
 		error('Debes especificar el formato de la salt')
 
+#######################################################################################################
+#																								      #
+#Función que convierte el 'True' del archivo de configuración en un booleano                          #
+#																									  #
+#######################################################################################################
+
+def obten_bool(parametro):
+	parametro.lower in ('True')
+
 
 ####################################################################################################
 #																								   #
@@ -112,7 +122,14 @@ def revisa_opciones(opts):
 
 if __name__ == '__main__':
 	try:
-			
+		if obten_valores(opts)['config'] is not None:
+			configuraciones = cambia_parametros(obten_valores(opts),lee_configuracion(obten_valores(opts)['config']))
+		else: 
+			configuraciones = obten_valores(opts)
+
+		revisa_opciones(configuraciones)
+		
+
 	except Exception as e:
         error('Ocurrió un error')
 		error(e, True)

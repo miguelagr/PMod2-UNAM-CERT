@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 #UNAM-CERT
 
+import sys
+
 ###########################################################################
 # Función para identificar el tipo de has introducido                     #                                                   #
 ###########################################################################
@@ -22,5 +24,5 @@ def identifica(hashh):
 	else:
 		print "No se pudo identificar el hash"
 
-identifica('8746af223ce7714e000eb08283d10fb5b8da581bd07ceaaff18423dbec9afe8210cd5fc912a1a54e85c43d9972527bd6')
+identifica(sys.argv[1])
 

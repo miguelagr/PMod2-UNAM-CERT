@@ -5,6 +5,7 @@
 import hashlib
 import binascii
 import sys
+import threading
 from Crypto.Hash import MD4
 		
 #############################################################################################################################
@@ -13,16 +14,15 @@ from Crypto.Hash import MD4
 # en el cuál la contraseña a analizar es la llave y el valor es un arreglo con los diferentes hashes para dicha contraseña  #
 #                                                                                                                           #
 #############################################################################################################################
-def generaHashes(archivo):
+def generaHashes(archivo, numero_hilos):
 	hashes = {}
 	try:
 		contrasenas = open(archivo,"r") 
-		linea = contrasenas.readline() 
-		for linea in contrasenas:
+		linea = contrasenas.readline()
+			for linea in contrasenas:
 			linea = linea.rstrip('\n') #Quitamos saltos de línea
 			linea = linea.rstrip('\t') #Quitamos tabuladores 
-			linea = linea.rstrip('\r') #Quitamos retorno de carro 
-			#A partir de aquí empezamos a calcular los hashes
+			linea = linea.rstrip('\r') #Quitamos retorno de carro 				#A partir de aquí empezamos a calcular los hashes
 			md4 = MD4.new()
 			md4.update(linea)
 			md5 = hashlib.md5()
@@ -63,6 +63,12 @@ def generaHashes(archivo):
 		contrasenas.close()
 	except IOError:
 		print "Ocurrió un error al tratar de abrir el archivo"
+
+
+for numero_hilos in range(3):
+		hilo = threading.Thread(terget=generaHashes, args=numero_hilos)
+
+		hilo.start()
     	
 ########################################################################################################################
 #																													   #
@@ -71,7 +77,7 @@ def generaHashes(archivo):
 ########################################################################################################################
 
 def buscaContrasena(diccionario,hash):
-	contador = 0
+	#contador = 0
 	for key in diccionario.keys():
 			for value in diccionario[key]:
 				#print value
