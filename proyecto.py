@@ -18,7 +18,7 @@ def printError(msg, exit = False):
 def addOptions():
 	parser = optparse.OptionParser()
 	parser.add_option('-m','--romperHash', dest='romperHash', default=None, help='Recibe un hash a romper')
-	parser.add_option('-M', '--romperHashes', dest='romperHashes', defalult=None, help='Recibe una lista de hashes a romper')
+	parser.add_option('-M', '--romperHashes', dest='romperHashes', default=None, help='Recibe una lista de hashes a romper')
 	parser.add_option('-a', '--algoritmo', dest='algoritmo', default=None, help='Algoritmo con el que fue calculado el hash a romper/algoritmos para la rainbow table')
 	parser.add_option('-d', '--diccionario', dest='diccionario', default=None, help='Diccionario de contraseñas para el cálculo de hashes')
 	parser.add_option('-s', '--salt', dest='salt', default=None, help='Salt a usar para el cálculo del hash')
@@ -60,9 +60,9 @@ def lee_configuracion(archivo):
 ############################################################################################			
 def obten_valores(opts):
     valores = {} 
-    valores['hash'] = opts.valores
-    valores['hashes'] = opts.hash
-    valores['algoritmo'] = opts.hashes
+    valores['hash'] = opts.romperHash
+    valores['hashes'] = opts.romperHashes
+    valores['algoritmo'] = opts.algoritmo
     valores['diccionario'] = opts.diccionario
     valores['salt'] = opts.salt
     valores['formato'] = opts.formato
@@ -72,7 +72,7 @@ def obten_valores(opts):
     valores['identif'] = opts.identif
     valores['genera'] = opts.genera
     valores['hashkiller'] = opts.hashkiller
-    valores['verboso'] = opts.verboso
+    valores['verboso'] = opts.verbose
     valores['hashcat'] = opts.hashcat
     valores['shadow'] = opts.shadow 
     return valores
