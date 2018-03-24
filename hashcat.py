@@ -100,7 +100,7 @@ def hashcat(hilos,archivo,digest):
 
 
 
-hashcat(10,"rockyou.txt", sys.argv[1])
+#hashcat(10,"rockyou.txt", sys.argv[1])
 
 
 

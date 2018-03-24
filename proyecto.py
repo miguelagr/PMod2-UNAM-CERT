@@ -4,7 +4,7 @@
 import re
 import sys
 import optparse
-from hashcat import buscaContrasena, generaHashes
+from hashcat import buscaContrasena, generaHashes, hashcat
 from identificador import identifica
 
 
@@ -22,7 +22,7 @@ def addOptions():
 	parser.add_option('-s', '--salt', dest='salt', default=None, help='Salt a usar para el cálculo del hash')
 	parser.add_option('-f', '--formato', dest='formato', default=None, help='Formato de uso de la salt ($salt$pass o $pass$salt)')
 	parser.add_option('-o', '--output', dest='output', default=None, help='Archivo dónde se guardará el reporte de los resultados')
-	parser.add_option('-t', '--threads', dest='threads', default=None, help='Número de hilos a utilizar para el calculo de los hashes')
+	parser.add_option('-t', '--threads', dest='threads', default=1, help='Número de hilos a utilizar para el calculo de los hashes')
 	parser.add_option('-c', '--config', dest='config', default=None, help='Archivo de configuración que puede ser usado para modificar la ejecución')
 	parser.add_option('-i', '--identif', dest='identif', default=None, help='Identifica el tipo de hash introducido')
 	parser.add_option('-g', '--genera', dest='genera', default=None, help='Genera una base de datos con los hashes de un diccionario de contraseñas')
@@ -96,7 +96,8 @@ def cambia_parametros(original, modificado):
 def revisa_opciones(opts):
 	if opts['hashcat'] is not False and opts['hashkiller'] is not None: #Evita que se pasen al mismo tiempo el modo hashcat y el modo hashkiller
 		error('¡¡No puedes usar al mismo tiempo las opciones hashcat y hashkiller!!')
-	
+	if opts['hashcat'] is not False and opts['hash'] is None:
+		error('¡¡Especifica el hash a romper!!')
 	if opts['shadow'] is not None and opts['algoritmo'] is not None: #Evita que al usar un archivo con formato /etc/shadow se pasen las opciones: salt, algoritmo y genera (base de datos)
 		error('¡¡No puedes usar al mismo tiempo las opciones shadow y algoritmo!!')
 	elif opts['shadow'] is not None and opts['salt'] is not None:
@@ -104,8 +105,9 @@ def revisa_opciones(opts):
 	elif opts['shadow'] is not None and opts['genera'] is not None:
 		error('¡¡No puedes usar al mismo tiempo las opciones shadow y genera!!')
 
-	if opts['salt'] is not None and opts['formato' is None]: #Evita que se pase la salt sin formato
+	if opts['salt'] is not None and opts['formato'] is None and (opts['formato'] =! 1 or opts['formato'] =! 2) : #Evita que se pase la salt sin formato
 		error('Debes especificar el formato de la salt')
+
 
 #######################################################################################################
 #																								      #
@@ -116,6 +118,29 @@ def revisa_opciones(opts):
 def obten_bool(parametro):
 	parametro.lower in ('True')
 
+#######################################################################################################
+#																									  #
+#Función para crear archivo de contraseñas con la salt que se especifique							  #	
+#																									  #
+#######################################################################################################
+
+def salt(archivo,salt,argumento):
+	try:
+		contrasenas = open(archivo,'r')
+		nuevo = open("contrasenas.txt", 'w')
+		linea = contrasenas.readline()
+		while linea:
+			if argumento == 1:
+				nuevo.write(linea = salt ++ linea)
+			elif argumento == 2: 
+				nuevo.write(linea = linea ++ write)
+			else:
+				print "Parámetro inesperado"
+		return nuevo
+		contrasenas.close()
+		nuevo.close()
+	except IOError:
+		print "Error inesperado"
 
 ####################################################################################################
 #																								   #
@@ -135,12 +160,27 @@ if __name__ == '__main__':
 
 		if configuraciones['hashcat'] :
 			hashcat = hashcat()
-			contrasenas = hashcat.generaHashes(configuraciones['diccionario'])
-			hashcat.buscaContrasena(contrasenas)
+			if configuraciones['salt'] is not None:
+				if configuraciones['formato'] == 1:
+					nuevo = salt(configuraciones['diccionario'],configuraciones['salt'],configuraciones['formato'])
+					#contrasenas = hashcat.generaHashes(nuevo, configuraciones['threads'],)
+					#hashcat.buscaContrasena(contrasenas, configuraciones['hash'])
+					hashcat.hashcat(configuraciones['threads'],nuevo, configuraciones['hash'])
+				elif configuraciones['formato'] == 2:
+					nuevo = salt(configuraciones['diccionario'],configuraciones['salt'],configuraciones['formato'])
+					#contrasenas = hashcat.generaHashes(nuevo, configuraciones['threads'],)
+					#hashcat.buscaContrasena(contrasenas, configuraciones['hash'])
+					hashcat.hashcat(configuraciones['threads'], nuevo, configuraciones['hash'])
+				else:
+					#contrasenas = hashcat.generaHashes(configuraciones['diccionario'],)
+					#hashcat.buscaContrasena(contrasenas,configuraciones['hash'])
+					hashcat.hashcat(configuraciones['threads'], configuraciones['diccionario'], configuraciones['hash'])
 
 		elif configuraciones['identif'] is not None:
 			identificador = identificador()
-			identificador.identifica(configuraciones['configuraciones'])
+			identificador.identifica(configuraciones['identif'])
+
+		elif 
 
 	except Exception as e:
 		print 'Ocurrió un error'
