@@ -7,19 +7,21 @@ import binascii
 import sys
 import threading
 from Crypto.Hash import MD4
-		
+import Queue
+
 #############################################################################################################################
 #                                                                                                                           #
 # Función mediante la cuál vamos a generar los hashes, regresa un diccionario;                                              #
 # en el cuál la contraseña a analizar es la llave y el valor es un arreglo con los diferentes hashes para dicha contraseña  #
 #                                                                                                                           #
 #############################################################################################################################
-def generaHashes(archivo):
+def generaHashes(archivo,hilos,hilo,q):
 	hashes = {}
 	try:
-		contrasenas = open(archivo,"r") 
-		linea = contrasenas.readline()
-		for linea in contrasenas:
+		contrasenas = open(archivo,"r")
+                for i in range(1,hilo + 1):
+		    linea = contrasenas.readline()
+		while linea:
 			linea = linea.rstrip('\n') #Quitamos saltos de línea
 			linea = linea.rstrip('\t') #Quitamos tabuladores 
 			linea = linea.rstrip('\r') #Quitamos retorno de carro 				#A partir de aquí empezamos a calcular los hashes
@@ -58,8 +60,10 @@ def generaHashes(archivo):
 			#print(binascii.hexlify(ntlm))
 			valores = [md4.hexdigest(), md5.hexdigest(), sha1.hexdigest(), sha224.hexdigest(), sha256.hexdigest(), sha384.hexdigest(), sha512.hexdigest(), binascii.hexlify(ntlm)]
 			hashes[linea] = valores #Guardamos como llave la contraseña y como valor un arreglo con los hashes
+                        for i in range(hilos):
+                            linea = contrasenas.readline()
 		#print(hashes)
-		return hashes
+		q.put(hashes)
 		contrasenas.close()
 	except IOError:
 		print "Ocurrió un error al tratar de abrir el archivo"
@@ -84,4 +88,29 @@ def buscaContrasena(diccionario,hash):
 				if value == hash:
 					print "La contraseña es: " + key
 
+hilos = int(sys.argv[1])
+threads = []
+q = Queue.Queue()
+for i in range(hilos):
+    t = threading.Thread(target=generaHashes, args=("rockyou.txt",hilos,i + 1,q,))
+    threads.append(t)
+    t.start()
+    t.join()
+
+
+
+for item in range(len(threads)):
+    buscaContrasena(q.get(),sys.argv[1])
+
+
+
 #buscaContrasena((generaHashes("rockyou.txt")), sys.argv[1])
+
+
+
+#m2 = md4.new()
+#m2.update("")
+#print m2.hexdigest()
+
+#for i in hashlib.algorithms_available:
+#    print i
