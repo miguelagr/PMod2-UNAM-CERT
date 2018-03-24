@@ -115,13 +115,13 @@ def identifica(hashh):
 #print genera_bd("rockyou.txt","algos")
 #print genera_bd("rockyou.txt",sys.argv[1],sys.argv[2:])
 
-digest = 'd577273ff885c3f84dadb8578bb41399'
-print busca_hash(sys.argv[1],sys.argv[2],identifica(sys.argv[2]))
+#digest = 'd577273ff885c3f84dadb8578bb41399'
+#print busca_hash(sys.argv[1],sys.argv[2],identifica(sys.argv[2]))
 #    print i
 
 
 #print busca_hash("rockyou",sys.argv[1],identifica(sys.argv[1]))
-digest = '2672275fe0c456fb671e4f417fb2f9892c7573ba'
+#digest = '2672275fe0c456fb671e4f417fb2f9892c7573ba'
 #for i in busca_hash("rockyou",digest,identifica(digest)):
 #    print i
 

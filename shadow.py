@@ -47,4 +47,4 @@ def obtener_pass(arch,sh):
             l = f.readline()
         return t
 
-print obtener_pass("rockyou.txt",obtener_salt("shadow"))
+#print obtener_pass("rockyou.txt",obtener_salt("shadow"))

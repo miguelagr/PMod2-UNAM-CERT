@@ -4,9 +4,11 @@
 import re
 import sys
 import optparse
+import psycopg2
 from hashcat import buscaContrasena, generaHashes, hashcat
 from identificador import identifica
-
+from hashkiller import genera_bd, busca_hash
+from shadow import obtener_salt, obtener_pass
 
 def printError(msg, exit = False):
         sys.stderr.write('Error:\t%s\n' % msg)
@@ -104,9 +106,17 @@ def revisa_opciones(opts):
 		error('¡¡No puedes usar al mismo tiempo las opcines shadow y salt!!')
 	elif opts['shadow'] is not None and opts['genera'] is not None:
 		error('¡¡No puedes usar al mismo tiempo las opciones shadow y genera!!')
+	elif opts['shadow'] is not None and opts['diccionario'] is None:
+		error('¡¡Especifica el diccionario de contraseñas')
 
-	if opts['salt'] is not None and opts['formato'] is None and (opts['formato'] =! 1 or opts['formato'] =! 2) : #Evita que se pase la salt sin formato
+	if opts['salt'] is not None and opts['formato'] is None and (opts['formato'] is not 1 or opts['formato'] is not 2) : #Evita que se pase la salt sin formato
 		error('Debes especificar el formato de la salt')
+
+	if opts['genera'] is not None and opts['algoritmo'] is None and opts['diccionario']:
+		error('¡¡Ingresa los algoritmos y el archivo de contrasenas!!')
+
+	if opts['hashkiller'] is not None and opts['algoritmo'] is None and (opts['hash'] is None or opts['hashes'] is None):
+		error('¡¡Ingresa el hash o hashes a buscar y los posibles algoritmos!!')
 
 
 #######################################################################################################
@@ -180,8 +190,30 @@ if __name__ == '__main__':
 			identificador = identificador()
 			identificador.identifica(configuraciones['identif'])
 
-		elif 
+		elif configuraciones['genera'] is not None:
+			algoritmos = configuraciones['algoritmo']
+			for keys in algoritmos[key]:
+				cadena += algoritmos[key] + " "
+			generador = hashkiller()
+			generador.genera_bd(configuraciones['diccionario'],configuraciones['genera'],cadena)
 
+		elif configuraciones['hashkiller'] is not None:
+			if configuraciones['hash'] is not None and configuraciones['hashes'] is not None:
+				error("¡¡Ingresa un hash o un archivo con hashes, pero no ambos!!")
+			elif configuraciones['hash'] is not None:
+				for keys in algoritmos[key]:
+					cadena += algoritmos[key] + " "
+				busca_hash(configuraciones['hashkiller'], configuraciones['hash'],cadena)
+			elif configuraciones['hashes'] is not None:
+				for keys in algoritmos[key]:
+					cadena += algoritmos[key] + " "
+				archivo = open(configuraciones[hashes],'r')
+				linea = archivo.readline()
+				while linea:
+					busca_hash(configuraciones['hashes'], linea, cadena)
+
+		elif configuraciones['shadow'] is not None:
+			obtener_pass(configuraciones['diccionario'], obtener_salt(configuraciones['shadow']))
 	except Exception as e:
 		print 'Ocurrió un error'
         #error('Ocurrió un error')
