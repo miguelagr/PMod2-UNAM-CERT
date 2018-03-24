@@ -115,14 +115,14 @@ def identifica(hashh):
         sys.exit("hash invalido")
 
 #print genera_bd("rockyou.txt","algos")
-print genera_bd("rockyou.txt",sys.argv[1],[sys.argv[3]])
+#print genera_bd("rockyou.txt",sys.argv[1],[sys.argv[3]])
 
 #digest = 'd577273ff885c3f84dadb8578bb41399'
-<<<<<<< HEAD
+#<<<<<<< HEAD
 #print busca_hash(sys.argv[1],sys.argv[2],identifica(sys.argv[2]))
-=======
-print busca_hash(sys.argv[1],sys.argv[2],identifica(sys.argv[2]))
->>>>>>> d06f7a02b4a066e1cc30b2c0ccbd08d80ff81701
+#=======
+#print busca_hash(sys.argv[1],sys.argv[2],identifica(sys.argv[2]))
+#>>>>>>> d06f7a02b4a066e1cc30b2c0ccbd08d80ff81701
 #    print i
 
 

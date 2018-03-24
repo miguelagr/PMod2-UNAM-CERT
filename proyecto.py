@@ -98,11 +98,13 @@ def cambia_parametros(original, modificado):
 def revisa_opciones(opts):
 	if opts['hashcat'] is not False and opts['hashkiller'] is not None: #Evita que se pasen al mismo tiempo el modo hashcat y el modo hashkiller
 		error('¡¡No puedes usar al mismo tiempo las opciones hashcat y hashkiller!!')
-	if opts['hashcat'] is not False and opts['hash'] is None:
+
+	if opts['hashcat'] is not False and opts['hash'] is None: #Obliga a que siempre que se use el modo hashcat se le pase un hash
 		error('¡¡Especifica el hash a romper!!')
+
 	if opts['shadow'] is not None and opts['algoritmo'] is not None: #Evita que al usar un archivo con formato /etc/shadow se pasen las opciones: salt, algoritmo y genera (base de datos)
 		error('¡¡No puedes usar al mismo tiempo las opciones shadow y algoritmo!!')
-	elif opts['shadow'] is not None and opts['salt'] is not None:
+	elif opts['shadow'] is not None and opts['salt'] is not None: 
 		error('¡¡No puedes usar al mismo tiempo las opcines shadow y salt!!')
 	elif opts['shadow'] is not None and opts['genera'] is not None:
 		error('¡¡No puedes usar al mismo tiempo las opciones shadow y genera!!')
@@ -112,10 +114,10 @@ def revisa_opciones(opts):
 	if opts['salt'] is not None and opts['formato'] is None and (opts['formato'] is not 1 or opts['formato'] is not 2) : #Evita que se pase la salt sin formato
 		error('Debes especificar el formato de la salt')
 
-	if opts['genera'] is not None and opts['algoritmo'] is None and opts['diccionario']:
+	if opts['genera'] is not None and opts['algoritmo'] is None and opts['diccionario']: #Obliga a que se pasen algorimos al momento de la generación de la base de datos
 		error('¡¡Ingresa los algoritmos y el archivo de contrasenas!!')
 
-	if opts['hashkiller'] is not None and opts['algoritmo'] is None and (opts['hash'] is None or opts['hashes'] is None):
+	if opts['hashkiller'] is not None and opts['algoritmo'] is None and (opts['hash'] is None or opts['hashes'] is None): #Obliga a que se pasen algoritmos al usar el modo hashkiller
 		error('¡¡Ingresa el hash o hashes a buscar y los posibles algoritmos!!')
 
 
@@ -161,43 +163,38 @@ def salt(archivo,salt,argumento):
 if __name__ == '__main__':
 	try:
 		opts = addOptions()
-		if obten_valores(opts)['config'] is not None:
-			configuraciones = cambia_parametros(obten_valores(opts),lee_configuracion(obten_valores(opts)['config']))
+		valores = obten_valores(opts)
+		if valores['config'] is not None: #Sí encuentra un archivo de configuración cambia los valores por los especificados en el archivo
+			configuraciones = cambia_parametros(obten_valores(opts),lee_configuracion(valores['config']))
 		else: 
 			configuraciones = obten_valores(opts)
 
-		revisa_opciones(configuraciones)
+		revisa_opciones(configuraciones) #Revisa que las banderas se hayan pasado corréctamente
 
-		if configuraciones['hashcat'] :
+		if configuraciones['hashcat'] is True: #Caso para cuando se pasa la bandera hashcat
 			hashcat = hashcat()
-			if configuraciones['salt'] is not None:
-				if configuraciones['formato'] == 1:
+			if configuraciones['salt'] is not None: #Checamos si se especifica salt
+				if configuraciones['formato'] == 1: #Formato 1 es $salt$pass
 					nuevo = salt(configuraciones['diccionario'],configuraciones['salt'],configuraciones['formato'])
-					#contrasenas = hashcat.generaHashes(nuevo, configuraciones['threads'],)
-					#hashcat.buscaContrasena(contrasenas, configuraciones['hash'])
 					hashcat.hashcat(configuraciones['threads'],nuevo, configuraciones['hash'])
-				elif configuraciones['formato'] == 2:
+				elif configuraciones['formato'] == 2: #Formato 2 es $pass$salt
 					nuevo = salt(configuraciones['diccionario'],configuraciones['salt'],configuraciones['formato'])
-					#contrasenas = hashcat.generaHashes(nuevo, configuraciones['threads'],)
-					#hashcat.buscaContrasena(contrasenas, configuraciones['hash'])
 					hashcat.hashcat(configuraciones['threads'], nuevo, configuraciones['hash'])
 				else:
-					#contrasenas = hashcat.generaHashes(configuraciones['diccionario'],)
-					#hashcat.buscaContrasena(contrasenas,configuraciones['hash'])
 					hashcat.hashcat(configuraciones['threads'], configuraciones['diccionario'], configuraciones['hash'])
 
-		elif configuraciones['identif'] is not None:
+		elif configuraciones['identif'] is not None: #Caso para la bandera que identifica el hash
 			identificador = identificador()
 			identificador.identifica(configuraciones['identif'])
 
-		elif configuraciones['genera'] is not None:
+		elif configuraciones['genera'] is not None: #Caso para la generación de la base de datos
 			algoritmos = configuraciones['algoritmo']
 			for keys in algoritmos[key]:
 				cadena += algoritmos[key] + " "
 			generador = hashkiller()
 			generador.genera_bd(configuraciones['diccionario'],configuraciones['genera'],cadena)
 
-		elif configuraciones['hashkiller'] is not None:
+		elif configuraciones['hashkiller'] is not None: #Caso para el modo hashkiller
 			if configuraciones['hash'] is not None and configuraciones['hashes'] is not None:
 				error("¡¡Ingresa un hash o un archivo con hashes, pero no ambos!!")
 			elif configuraciones['hash'] is not None:
@@ -212,9 +209,7 @@ if __name__ == '__main__':
 				while linea:
 					busca_hash(configuraciones['hashes'], linea, cadena)
 
-		elif configuraciones['shadow'] is not None:
+		elif configuraciones['shadow'] is not None: #Caso para el uso de archivo con formato shadow
 			obtener_pass(configuraciones['diccionario'], obtener_salt(configuraciones['shadow']))
 	except Exception as e:
 		print 'Ocurrió un error'
-        #error('Ocurrió un error')
-		#error(e, True)
