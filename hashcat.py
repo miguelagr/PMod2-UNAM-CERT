@@ -87,24 +87,20 @@ def buscaContrasena(diccionario,hash):
 				#print value
 				if value == hash:
 					print "La contraseña es: " + key
-
-hilos = int(sys.argv[1])
-threads = []
-q = Queue.Queue()
-for i in range(hilos):
-    t = threading.Thread(target=generaHashes, args=("rockyou.txt",hilos,i + 1,q,))
-    threads.append(t)
-    t.start()
-    t.join()
-
-
-
-for item in range(len(threads)):
-    buscaContrasena(q.get(),sys.argv[1])
+def hashcat(hilos,archivo,digest):
+        threads = []
+        q = Queue.Queue()
+        for i in range(hilos):
+                        t = threading.Thread(target=generaHashes, args=(archivo,hilos,i + 1,q,))
+                        threads.append(t)
+                        t.start()
+                        t.join()
+        for item in range(len(threads)):
+                        buscaContrasena(q.get(),digest)
 
 
 
-#buscaContrasena((generaHashes("rockyou.txt")), sys.argv[1])
+hashcat(10,"rockyou.txt", sys.argv[1])
 
 
 
