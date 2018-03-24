@@ -172,16 +172,15 @@ if __name__ == '__main__':
 		revisa_opciones(configuraciones) #Revisa que las banderas se hayan pasado corréctamente
 
 		if configuraciones['hashcat'] is True: #Caso para cuando se pasa la bandera hashcat
-			hashcat = hashcat()
 			if configuraciones['salt'] is not None: #Checamos si se especifica salt
 				if configuraciones['formato'] == 1: #Formato 1 es $salt$pass
 					nuevo = salt(configuraciones['diccionario'],configuraciones['salt'],configuraciones['formato'])
-					hashcat.hashcat(configuraciones['threads'],nuevo, configuraciones['hash'])
+					hashcat(configuraciones['threads'],nuevo, configuraciones['hash'])
 				elif configuraciones['formato'] == 2: #Formato 2 es $pass$salt
 					nuevo = salt(configuraciones['diccionario'],configuraciones['salt'],configuraciones['formato'])
-					hashcat.hashcat(configuraciones['threads'], nuevo, configuraciones['hash'])
+					hashcat(configuraciones['threads'], nuevo, configuraciones['hash'])
 				else:
-					hashcat.hashcat(configuraciones['threads'], configuraciones['diccionario'], configuraciones['hash'])
+					hashcat(configuraciones['threads'], configuraciones['diccionario'], configuraciones['hash'])
 
 		elif configuraciones['identif'] is not None: #Caso para la bandera que identifica el hash
 			identificador = identificador()
@@ -212,4 +211,4 @@ if __name__ == '__main__':
 		elif configuraciones['shadow'] is not None: #Caso para el uso de archivo con formato shadow
 			obtener_pass(configuraciones['diccionario'], obtener_salt(configuraciones['shadow']))
 	except Exception as e:
-		print 'Ocurrió un error'
+            print 'Ocurrió un error'
