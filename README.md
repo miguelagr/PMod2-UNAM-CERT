@@ -21,7 +21,9 @@ opop2=arg2
 Ejemplos de uso:
 
 Genera una tabla "tablamd5" con todos los md5 de el archivo rockyou.txt
-proyecto -a md5 -g tablamd5 -d rockyou.txt
+
+# proyecto -a md5 -g tablamd5 -d rockyou.txt
 
 Hace la busqueda del hash utilizando las constraseñas del archivo md5 en tiempo real utilizando 10 hilos 
-proyecto -k -d rockyou.txt -t 10 -m <hexdigest>
+
+# proyecto -k -d rockyou.txt -t 10 -m <hexdigest>
